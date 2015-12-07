@@ -7,7 +7,7 @@ const utils = require('./utils')
 
 let server, destroyServer, hh;
 
-describe.only('Adapter Validation', function() {
+describe('Adapter Validation', function() {
 
     afterEach(function(done) {
         destroyServer(done);
