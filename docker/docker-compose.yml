@@ -1,3 +1,9 @@
+rethinkdb:
+    image: rethinkdb
+    ports:
+        - "8080:8080"
+        - "28015:28015"
+        - "29015:29015"
 mongo1:
   hostname: mongo1
   image: mongo:3
@@ -31,4 +37,3 @@ msh:
   links:
     - mongo1:mongo1
   command: mongo --host mongo1
-
