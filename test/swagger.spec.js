@@ -61,24 +61,9 @@ describe('Swagger docs', function () {
                 {register: require('hapi-swagger'), options: {apiVersion: require('../package.json').version}}
             ], () => {
                 server.start(() => {
-                    _.forEach(schemas, function (schema) {
-                        [
-                            'get',
-                            'getById',
-                            'getChangesStreaming',
-                            'post',
-                            'patch',
-                            'delete'
-                        ].forEach(function (verb) {
-                            const route = server.plugins['hapi-harvester'].routes[verb](schema)
-                            if (_.isArray(route)) {
-                                _.forEach(route, function (route) {
-                                    server.route(route)
-                                });
-                            } else {
-                                server.route(route)
-                            }
-                        })
+                    const harvester = server.plugins['hapi-harvester']
+                    _.each(schemas, (schema) => {
+                        _.each(harvester.routes.all(schema), (route) => server.route(route))
                     })
                     resolve(server)
                 })
