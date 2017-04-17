@@ -53,15 +53,9 @@ var utils = {
     },
     createDefaultServerDestructor: function () {
         return function () {
-            return new Promise(function (resolve, reject) {
-                server.stop(function (err) {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve();
-                    }
-                })
-            });
+            return server.plugins['hapi-harvester'].rawAdapter.drop().then(() => {
+                return server.stop()
+            })
         }
     }
 };

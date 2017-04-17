@@ -35,7 +35,7 @@ describe('Rest operations when things go right', function() {
 
     after(utils.createDefaultServerDestructor())
 
-    it.only('should set the content-type header to application/json by default', function() {
+    it('should set the content-type header to application/json by default', function() {
         return server.injectThen({method: 'GET', url: '/brands'})
         .then((res) => {
             expect(res.headers['content-type']).to.equal('application/json; charset=utf-8')
@@ -65,7 +65,7 @@ describe('Rest operations when things go right', function() {
             })
     })
 
-    it('Will be able to GET by id from /brands', function() {
+    it.only('Will be able to GET by id from /brands', function() {
         return server.injectThen({method: 'post', url: '/brands', payload: {data}})
         .then((res) => {
             return server.injectThen({method: 'get', url: '/brands/' + res.result.data.id})
