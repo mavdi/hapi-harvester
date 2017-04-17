@@ -8,18 +8,17 @@ const config = require('./config');
 
 describe('Adapter Validation', function () {
 
-    const harvester = require('../')
-    const mongodbAdapter = harvester.getAdapter('mongodb')
-    const mongodbSSEAdapter = harvester.getAdapter('mongodb/sse')
+    const harvester = require('../../')
+    const postgresAdapter = harvester.getAdapter('postgres')
 
-    it('Will succeed if passed a valid adapter ', function () {
-        return buildServerSetupWithAdapters(mongodbAdapter(config.mongodbUrl), mongodbSSEAdapter(config.mongodbOplogUrl))
+    it.only('Will succeed if passed a valid adapter ', function () {
+        return buildServerSetupWithAdapters(postgresAdapter(config.mongodbUrl))
     })
 
     it('Will fail if the given adapter is missing a required function', function (done) {
 
-        const adapterWithoutDelete = _.omit(mongodbAdapter(config.mongodbUrl), 'delete')
-        buildServerSetupWithAdapters(adapterWithoutDelete, mongodbSSEAdapter(config.mongodbOplogUrl))
+        const adapterWithoutDelete = _.omit(postgresAdapter(config.mongodbUrl), 'delete')
+        buildServerSetupWithAdapters(adapterWithoutDelete)
             .catch(e => {
                 expect(e.message).to.equal('Adapter validation failed. Adapter missing delete')
                 done()
@@ -27,19 +26,8 @@ describe('Adapter Validation', function () {
             .catch(done)
     })
 
-    it('Will fail if the given adapterSSE is missing a required function', function (done) {
-
-        const adapterWithoutStreamChanges = _.omit(mongodbSSEAdapter(config.mongodbOplogUrl), 'streamChanges')
-        buildServerSetupWithAdapters(mongodbAdapter(config.mongodbUrl), adapterWithoutStreamChanges)
-            .catch(e => {
-                expect(e.message).to.equal('Adapter validation failed. Adapter missing streamChanges')
-                done()
-            })
-            .catch(done)
-    })
-
     it('will initialise the adapter with provided options', function () {
-        return initialiseAdapterWithOptions(mongodbAdapter(config.mongodbUrl, {server: {maxPoolSize: 10}}))
+        return initialiseAdapterWithOptions(postgresAdapter(config.mongodbUrl, {server: {maxPoolSize: 10}}))
     })
 
     it('will initialise the adapterSSE with provided options', function () {
@@ -69,7 +57,7 @@ describe('Adapter Validation', function () {
             }
         }
         //When
-        var adapterInstance = mongodbAdapter(config.mongodbUrl);
+        var adapterInstance = postgresAdapter(config.mongodbUrl);
         return adapterInstance.connect().then(function () {
             const model = adapterInstance.processSchema(schema)
             expect(model.schema.path('attributes.type')).to.be.an('object')
@@ -89,7 +77,7 @@ function buildServerSetupWithAdapters(adapter, adapterSSE) {
 
         server.register([
             {
-                register: require('../'), options: {
+                register: require('../../'), options: {
                 adapter: adapter,
                 adapterSSE: adapterSSE
             }

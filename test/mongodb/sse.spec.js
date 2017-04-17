@@ -6,7 +6,7 @@ const Joi = require('joi')
 const utils = require('./utils')
 const seeder = require('./seeder')
 const $http = require('http-as-promised')
-const sse = require('../lib/sse')
+const sse = require('../../lib/sse')
 
 var Rx = require('rx');
 

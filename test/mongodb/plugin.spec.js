@@ -28,7 +28,7 @@ describe('Plugin Basics', function () {
     })
 
     it('Attaches the plugin to Hapi server configuration', function () {
-        expect(server.plugins['hapi-harvester'].version).to.equal(require('../package.json').version)
+        expect(server.plugins['hapi-harvester'].version).to.equal(require('../../package.json').version)
     })
 
     it('should have the injectThen method available', function () {
@@ -53,7 +53,7 @@ describe('Plugin Basics', function () {
         function bootstrapWithoutAdapter() {
             server = new Hapi.Server()
             server.connection()
-            const harvester = require('../lib/plugin')
+            const harvester = require('../../lib/plugin')
             server.register([{
                 register: harvester,
                 options: {
@@ -71,7 +71,7 @@ describe('Plugin Basics', function () {
 
         function bootstrapWithoutAdapter() {
 
-            const harvester = require('../lib/plugin')
+            const harvester = require('../../lib/plugin')
 
             const server = new Hapi.Server()
             server.connection()
@@ -129,7 +129,7 @@ buildServer = function (done) {
     server = new Hapi.Server()
     server.connection()
 
-    const harvester = require('../')
+    const harvester = require('../../')
     const mongodbAdapter = harvester.getAdapter('mongodb')
     const mongodbSSEAdapter = harvester.getAdapter('mongodb/sse')
 

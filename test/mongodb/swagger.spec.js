@@ -3,7 +3,7 @@
 const _ = require('lodash')
 const Joi = require('joi')
 const config = require('./config')
-const Pack = require('../package')
+const Pack = require('../../package')
 const HapiSwagger = require('hapi-swagger')
 
 describe('Swagger docs', function () {
@@ -41,7 +41,7 @@ describe('Swagger docs', function () {
         return new Promise(function (resolve) {
             let server
             const Hapi = require('hapi')
-            const harvester = require('../')
+            const harvester = require('../../')
 
             const mongodbAdapter = harvester.getAdapter('mongodb')
             const mongodbSSEAdapter = harvester.getAdapter('mongodb/sse')
@@ -59,7 +59,7 @@ describe('Swagger docs', function () {
             server.connection({port: 9100})
             server.register([
                 {
-                    register: require('../'),
+                    register: require('../../'),
                     options: {
                         adapter: mongodbAdapter(config.mongodbUrl),
                         adapterSSE: mongodbSSEAdapter(config.mongodbOplogUrl)

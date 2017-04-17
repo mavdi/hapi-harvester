@@ -20,7 +20,7 @@ var utils = {
         let server;
         const Hapi = require('hapi');
 
-        const harvester = require('../');
+        const harvester = require('../../');
         const mongodbAdapter = harvester.getAdapter('mongodb')
         const mongodbSSEAdapter = harvester.getAdapter('mongodb/sse')
 

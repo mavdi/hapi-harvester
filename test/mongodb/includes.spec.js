@@ -263,7 +263,7 @@ describe('Inclusion', function () {
 
     describe('empty inclusion array', function () {
         it('should NOT throw error', function () {
-            const includes = require('../lib/includes.js')(server, harvester.adapter, harvester.schemas);
+            const includes = require('../../lib/includes.js')(server, harvester.adapter, harvester.schemas);
             includes.appendLinkedResources(null, {data: []}, 'people', []);
         });
     });
