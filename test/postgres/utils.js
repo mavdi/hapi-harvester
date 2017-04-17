@@ -21,8 +21,7 @@ var utils = {
         const Hapi = require('hapi');
 
         const harvester = require('../../');
-        const mongodbAdapter = harvester.getAdapter('mongodb')
-        const mongodbSSEAdapter = harvester.getAdapter('mongodb/sse')
+        const postgresAdapter = harvester.getAdapter('postgres')
 
         server = new Hapi.Server();
         server.connection({port: options.port || 9100});
@@ -30,8 +29,7 @@ var utils = {
             server.register([{
                 register: harvester,
                 options: {
-                    adapter: mongodbAdapter(config.mongodbUrl),
-                    adapterSSE: mongodbSSEAdapter(config.mongodbOplogUrl)
+                    adapter: postgresAdapter(config)
                 }
             }, require('susie'), require('inject-then')
             ], () => {
@@ -41,7 +39,6 @@ var utils = {
                         const routes = harvester.routes.all(schema)
                         _.forEach(routes, (route) => server.route(route))
                     });
-                    server.route(harvester.routes.getChangesStreaming())
                     resolve({server, harvester})
                 })
             })

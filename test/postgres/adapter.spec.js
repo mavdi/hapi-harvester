@@ -11,7 +11,13 @@ describe('Adapter Validation', function () {
     const harvester = require('../../')
     const postgresAdapter = harvester.getAdapter('postgres')
 
-    it.only('Will succeed if passed a valid adapter ', function () {
+    function initialiseAdapterWithOptions(adapterInstance) {
+        return adapterInstance.connect().then(()=> {
+            adapterInstance.disconnect()
+        })
+    }
+
+    it('Will succeed if passed a valid adapter ', function () {
         return buildServerSetupWithAdapters(postgresAdapter(config))
     })
 
@@ -27,18 +33,8 @@ describe('Adapter Validation', function () {
     })
 
     it('will initialise the adapter with provided options', function () {
-        return initialiseAdapterWithOptions(postgresAdapter(config, {server: {maxPoolSize: 10}}))
+        return initialiseAdapterWithOptions(postgresAdapter(config))
     })
-
-    it('will initialise the adapterSSE with provided options', function () {
-        return initialiseAdapterWithOptions(mongodbSSEAdapter(config, {server: {maxPoolSize: 10}}))
-    })
-
-    function initialiseAdapterWithOptions(adapterInstance) {
-        return adapterInstance.connect().then(()=> {
-            adapterInstance.disconnect()
-        })
-    }
 
     it('Will won\'t accept a string adapter if it doesn\'t exist ', function () {
         function constructAdapter() {
@@ -48,7 +44,7 @@ describe('Adapter Validation', function () {
         expect(constructAdapter).to.throw(Error)
     })
 
-    it('should handle attribute named "type"', function () {
+    it.skip('should handle attribute named "type"', function () {
         //Given
         const schema = {
             type: 'car',
@@ -60,6 +56,7 @@ describe('Adapter Validation', function () {
         var adapterInstance = postgresAdapter(config);
         return adapterInstance.connect().then(function () {
             const model = adapterInstance.processSchema(schema)
+            console.log(model)
             expect(model.schema.path('attributes.type')).to.be.an('object')
             return adapterInstance.disconnect();
         }).catch(function (e) {

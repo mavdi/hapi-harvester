@@ -32,7 +32,7 @@ module.exports = function (harvesterInstance) {
     function drop(collectionName) {
         var model = harvesterInstance.plugins['hapi-harvester'].adapter.models[collectionName];
         if (model) {
-            return model.remove({}).lean().exec();
+            return model.destroy({truncate: true})
         } else {
             return Promise.resolve();
         }

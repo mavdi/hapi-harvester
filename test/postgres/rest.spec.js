@@ -29,13 +29,13 @@ describe('Rest operations when things go right', function() {
 
     before(function () {
         return utils.buildDefaultServer(schema).then(function (server) {
-            return seeder(server).dropCollections('brands');
-        });
-    });
+            return seeder(server).dropCollections('brands')
+        })
+    })
 
-    after(utils.createDefaultServerDestructor());
+    after(utils.createDefaultServerDestructor())
 
-    it('should set the content-type header to application/json by default', function() {
+    it.only('should set the content-type header to application/json by default', function() {
         return server.injectThen({method: 'GET', url: '/brands'})
         .then((res) => {
             expect(res.headers['content-type']).to.equal('application/json; charset=utf-8')
