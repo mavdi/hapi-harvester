@@ -12,12 +12,12 @@ describe('Adapter Validation', function () {
     const postgresAdapter = harvester.getAdapter('postgres')
 
     it.only('Will succeed if passed a valid adapter ', function () {
-        return buildServerSetupWithAdapters(postgresAdapter(config.mongodbUrl))
+        return buildServerSetupWithAdapters(postgresAdapter(config))
     })
 
     it('Will fail if the given adapter is missing a required function', function (done) {
 
-        const adapterWithoutDelete = _.omit(postgresAdapter(config.mongodbUrl), 'delete')
+        const adapterWithoutDelete = _.omit(postgresAdapter(config), 'delete')
         buildServerSetupWithAdapters(adapterWithoutDelete)
             .catch(e => {
                 expect(e.message).to.equal('Adapter validation failed. Adapter missing delete')
@@ -27,11 +27,11 @@ describe('Adapter Validation', function () {
     })
 
     it('will initialise the adapter with provided options', function () {
-        return initialiseAdapterWithOptions(postgresAdapter(config.mongodbUrl, {server: {maxPoolSize: 10}}))
+        return initialiseAdapterWithOptions(postgresAdapter(config, {server: {maxPoolSize: 10}}))
     })
 
     it('will initialise the adapterSSE with provided options', function () {
-        return initialiseAdapterWithOptions(mongodbSSEAdapter(config.mongodbUrl, {server: {maxPoolSize: 10}}))
+        return initialiseAdapterWithOptions(mongodbSSEAdapter(config, {server: {maxPoolSize: 10}}))
     })
 
     function initialiseAdapterWithOptions(adapterInstance) {
@@ -57,7 +57,7 @@ describe('Adapter Validation', function () {
             }
         }
         //When
-        var adapterInstance = postgresAdapter(config.mongodbUrl);
+        var adapterInstance = postgresAdapter(config);
         return adapterInstance.connect().then(function () {
             const model = adapterInstance.processSchema(schema)
             expect(model.schema.path('attributes.type')).to.be.an('object')

@@ -1,7 +1,10 @@
-const mongodbUrl = process.env.MONGODB_URL || 'mongodb://localhost/test'
-const mongodbOplogUrl = process.env.MONGODB_OPLOG_URL || 'mongodb://localhost/local'
-
 module.exports = {
-    mongodbUrl,
-    mongodbOplogUrl
-}
+    username: process.env.POSTGRES_USERNAME || 'postgres',
+    password: process.env.POSTGRES_PASSWORD || 'postgres',
+    database: process.env.POSTGRES_DB_NAME || 'harvester',
+    host: process.env.POSTGRES_HOST || 'localhost',
+    dialect: 'postgres',
+    dialectOptions: {
+        ssl: true
+    }
+  }
