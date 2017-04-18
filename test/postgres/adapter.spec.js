@@ -5,6 +5,7 @@ const Hapi = require('hapi')
 const Joi = require('joi')
 const utils = require('./utils');
 const config = require('./config');
+const Promise = require('bluebird')
 
 describe('Adapter Validation', function () {
 
@@ -44,7 +45,7 @@ describe('Adapter Validation', function () {
         expect(constructAdapter).to.throw(Error)
     })
 
-    it.skip('should handle attribute named "type"', function () {
+    it('should handle attribute named "type"', function () {
         //Given
         const schema = {
             type: 'car',
@@ -57,8 +58,8 @@ describe('Adapter Validation', function () {
         return adapterInstance.connect().then(function () {
             const model = adapterInstance.processSchema(schema)
             console.log(model)
-            expect(model.schema.path('attributes.type')).to.be.an('object')
-            return adapterInstance.disconnect();
+            expect(model.attributes.attributes_type).to.be.an('object')
+            return Promise.delay(1000).then(adapterInstance.disconnect)
         }).catch(function (e) {
             adapterInstance.disconnect();
             throw e;

@@ -25,10 +25,12 @@ const data = {
     }
 };
 
-describe('Global Error Handling', function () {
+describe.only('Global Error Handling', function () {
 
     before(() => {
-        return utils.buildDefaultServer(schema)
+        return Promise.delay(0)
+            .then(() => utils.buildDefaultServer(schema))
+            .delay(1000)
     })
 
     after(utils.createDefaultServerDestructor())
@@ -57,7 +59,7 @@ describe('Global Error Handling', function () {
         beforeEach(() => {
             Brands = server.plugins['hapi-harvester'].adapter.models.brands
 
-            return Brands.remove({})
+            return Brands.destroy({truncate: true})
             .then(() => {
                 // create uniqueness constraint on db
                 return Brands.schema.path('attributes.code').index({ unique: true, sparse: true })
@@ -73,18 +75,8 @@ describe('Global Error Handling', function () {
             })
         })
 
-        after((done) => {
-            Brands.remove({})
-                .then(() => {
-                    Brands.collection.dropAllIndexes((err) => {
-                        if (err) {
-                            console.log('dropAllIndexes:', err)
-                            done(err)
-                        } else {
-                            done()
-                        }
-                    })
-                })
+        after(() => {
+            return Brands.destroy({truncate: true})
         })
 
 
