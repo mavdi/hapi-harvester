@@ -13,6 +13,9 @@ const schema = {
         attributes: {
             code: Joi.string().min(2).max(10),
             description: Joi.string()
+        },
+        options: {
+            unique: ['code']
         }
     }
 };
@@ -53,7 +56,7 @@ describe.only('Global Error Handling', function () {
 		})
 	})
 
-    describe('Given a duplicate post that voilates a uniqueness constraint on a collection', () => {
+    describe.only('Given a duplicate post that voilates a uniqueness constraint on a collection', () => {
         let Brands
 
         beforeEach(() => {
@@ -61,17 +64,11 @@ describe.only('Global Error Handling', function () {
 
             return Brands.destroy({truncate: true})
             .then(() => {
-                // create uniqueness constraint on db
-                return Brands.schema.path('attributes.code').index({ unique: true, sparse: true })
-            })
-            .then(() => {
-                return Brands.ensureIndexes((err) => {
-                    if (err) console.log('ensureIndexes:', err)
-                })
-            })
-            .then(() => {
                 // seed brand test data
-                return Brands.create(data);
+                return Brands.create({
+                    type: 'brands',
+                    attributes_code: 'MF'
+                });
             })
         })
 
@@ -84,6 +81,7 @@ describe.only('Global Error Handling', function () {
             let duplicateBrand = data
             return server.injectThen({ method: 'post', url: '/brands', payload: { data: duplicateBrand }})
             .then((res) => {
+                console.log(res)
                 expect(res.statusCode).to.equal(409)
             })
         })
