@@ -2,8 +2,9 @@
 
 const _ = require('lodash')
 const Joi = require('joi')
-const seeder = require('./seeder');
-const utils = require('./utils');
+const seeder = require('./seeder')
+const Promise = require('bluebird')
+const utils = require('./utils')
 
 const schema = {
     brands: {
@@ -31,7 +32,11 @@ const data = {
 describe('Filtering', function() {
 
     before(function() {
-        return utils.buildDefaultServer(schema).then((server) => {
+        return Promise.delay(0).then(() => {
+            return utils.buildDefaultServer(schema)
+        })
+        .delay(1000)
+        .then((server) => {
             var brands = [];
             _.times(10, (index) => {
                 let payload = _.cloneDeep(data);
@@ -41,7 +46,7 @@ describe('Filtering', function() {
             });
             return seeder(server).dropCollectionsAndSeed({brands: brands});
         })
-    });
+    })
 
     after(utils.createDefaultServerDestructor());
 

@@ -28,7 +28,7 @@ const data = {
     }
 };
 
-describe.only('Global Error Handling', function () {
+describe('Global Error Handling', function () {
 
     before(() => {
         return Promise.delay(0)
@@ -56,7 +56,7 @@ describe.only('Global Error Handling', function () {
 		})
 	})
 
-    describe.only('Given a duplicate post that voilates a uniqueness constraint on a collection', () => {
+    describe('Given a duplicate post that voilates a uniqueness constraint on a collection', () => {
         let Brands
 
         beforeEach(() => {

@@ -1,11 +1,26 @@
 'use strict';
 
-const _ = require('lodash');
-const seeder = require('./seeder');
-const Joi = require('joi');
-const utils = require('./utils');
+const _ = require('lodash')
+const seeder = require('./seeder')
+const Joi = require('joi')
+const utils = require('./utils')
+const Promise = require('bluebird')
 
 const schema = {
+    pets: {
+        type: 'pets',
+        attributes: {
+            name: Joi.string()
+        }
+    },
+    collars: {
+        type: 'collars',
+        attributes: {}
+    },
+    ents: {
+        type: 'ents',
+        attributes: {}
+    },
     people: {
         type: 'people',
         attributes: {
@@ -15,38 +30,8 @@ const schema = {
         relationships: {
             pets: {
               data: [{type: 'pets'}]
-            },
-            soulmate: {
-              data: {type: 'people'}
-            },
-            lovers: {
-                data: [{type: 'people'}]
             }
         }
-    },
-    pets: {
-        type: 'pets',
-        attributes: {
-            name: Joi.string()
-        },
-        relationships: {
-            owner: {
-              data: {type: 'people'}
-            }
-        }
-    },
-    collars: {
-        type: 'collars',
-        attributes: {},
-        relationships: {
-            collarOwner: {
-              data: {type: 'pets'}
-            }
-        }
-    },
-    ents: {
-        type: 'ents',
-        attributes: {}
     }
 };
 
@@ -62,12 +47,6 @@ const data = {
             relationships: {
                 pets: {
                     data: [{type: 'pets', id: 'c344d722-b7f9-49dd-9842-f0a375f7dfdc'}, {type: 'pets', id: 'a344d722-b7f9-49dd-9842-f0a375f7dfdc'}]
-                },
-                soulmate: {
-                    data: {type: 'people', id: 'c344d722-b7f9-49dd-9842-f0a375f7dfdc'}
-                },
-                lovers: {
-                    data: [{type: 'people', id: 'c344d722-b7f9-49dd-9842-f0a375f7dfdc'}]
                 }
             }
         },
@@ -80,9 +59,6 @@ const data = {
             relationships: {
                 pets: {
                     data: [{type: 'pets', id: 'b344d722-b7f9-49dd-9842-f0a375f7dfdc'}]
-                },
-                lovers: {
-                    data: [{type: 'people', id: 'abcdefff-b7f9-49dd-9842-f0a375f7dfdc'}]
                 }
             }
         }
@@ -107,22 +83,12 @@ const data = {
             id: 'b344d722-b7f9-49dd-9842-f0a375f7dfdc',
             attributes: {
                 name: 'Horsepol'
-            },
-            relationships: {
-                owner: {
-                    data: {type: 'people', id: 'abcdefff-b7f9-49dd-9842-f0a375f7dfdc'}
-                }
             }
         }
     ],
     collars: [
         {
-            type: 'collars',
-            relationships: {
-                collarOwner: {
-                    data: {type: 'pets', id: 'b344d722-b7f9-49dd-9842-f0a375f7dfdc'}
-                }
-            }
+            type: 'collars'
         }
     ]
 };
@@ -131,15 +97,19 @@ const data = {
 describe('Inclusion', function () {
 
     before(function () {
-        return utils.buildDefaultServer(schema).then((server) => {
-            return seeder(server).dropCollectionsAndSeed(data);
+        return Promise.delay(0).then(() => {
+            return utils.buildDefaultServer(schema)
+        })
+        .delay(1000)
+        .then((server) => {
+            return seeder(server).dropCollectionsAndSeed(data)
         })
     });
 
-    after(utils.createDefaultServerDestructor());
+    //after(utils.createDefaultServerDestructor());
 
     describe('many to many', function () {
-        it('should include referenced pets when querying people', function () {
+        it.only('should include referenced pets when querying people', function () {
             return server.injectThen({method: 'get', url: '/people?include=pets'}).then(function (res) {
                 expect(res.statusCode).to.equal(200);
                 const body = res.result;
