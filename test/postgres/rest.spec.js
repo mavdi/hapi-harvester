@@ -28,7 +28,12 @@ const data = {
 describe('Rest operations when things go right', function() {
 
     before(function () {
-        return utils.buildDefaultServer(schema).then(function (server) {
+        return Promise.delay(0)
+        .then(() => {
+            return utils.buildDefaultServer(schema)
+        })
+        .delay(1000)
+        .then((server) => {
             return seeder(server).dropCollections('brands')
         })
     })
@@ -65,7 +70,7 @@ describe('Rest operations when things go right', function() {
             })
     })
 
-    it.only('Will be able to GET by id from /brands', function() {
+    it('Will be able to GET by id from /brands', function() {
         return server.injectThen({method: 'post', url: '/brands', payload: {data}})
         .then((res) => {
             return server.injectThen({method: 'get', url: '/brands/' + res.result.data.id})
